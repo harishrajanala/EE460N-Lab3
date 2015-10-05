@@ -652,6 +652,9 @@ void eval_bus_drivers() {
    int R_W = GetR_W(contrAddr);
    int DATA_SIZE = GetDATA_SIZE(contrAddr);
    int LSHF1 = GetLSHF1(contrAddr);
+
+
+/*get what addr1 is*/
    if(ADDR1MUX == 0)
    {
       addr1 = CURRENT_LATCHES.PC;
@@ -662,6 +665,7 @@ void eval_bus_drivers() {
       addr1  = CURRENT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7];
    }   
 
+/*get what addr2 is*/
    if(ADDR2MUX == 0)
    {
       addr2 = 0;
@@ -690,11 +694,32 @@ void eval_bus_drivers() {
            addr2 = Low16bits(-1024 + (addr2 & 0x3FF));
       }
    }
+
+   /*left shift addr2 is necessary*/
    if(LSHF1 == 1)
    {
       addr2 = Low16bits(addr2 << 1);
    }
+   /*get result of address adder*/
    aaRes = Low16bits(addr1 + addr2);
+   
+   if(ALUK == 0)
+   {
+      /*add operation*/
+   }
+   else if (ALUK == 1)
+   {
+      /*and operation*/
+   }
+   else if (ALUK == 2)
+   {
+      /*xor operation*/
+   }
+   else if(ALUK == 3)
+   {
+      /*set ALU result to same as address adder*/
+      aluRes = aaRes;
+   }
 }
 
 

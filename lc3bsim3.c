@@ -606,6 +606,7 @@ void eval_micro_sequencer() {
    
 }
 
+int memCycle = 0;
 
 void cycle_memory() {
  
@@ -615,7 +616,12 @@ void cycle_memory() {
    * If fourth, we need to latch Ready bit at the end of 
    * cycle to prepare microsequencer for the fifth cycle.  
    */
-
+   memCycle++;
+   if(memCycle == 4)
+   {
+      NEXT_LATCHES.READY = 1;
+      memCycle = 0;
+   }
 }
 
 
@@ -631,7 +637,6 @@ void eval_bus_drivers() {
    *		 Gate_SHF,
    *		 Gate_MDR.
    */    
-
 }
 
 
@@ -640,7 +645,34 @@ void drive_bus() {
   /* 
    * Datapath routine for driving the bus from one of the 5 possible 
    * tristate drivers. 
-   */       
+   */    
+   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
+   int Gate_MARMUX = GetGATE_MARMUX(contrAddr);
+   int Gate_PC = GetGATE_PC(contrAddr);
+   int Gate_ALU = GetGATE_ALU(contrAddr);
+   int Gate_SHF = GetGATE_SHF(contrAddr);
+   int Gate_MDR = GetGATE_MDR(contrAddr);
+   if(!(Gate_MARMUX || Gate_PC || Gate_ALU || Gate_SHF || Gate_MDR))
+   {
+      BUS = 0;
+   }   
+   else if(Gate_MARMUX)
+   {
+   }
+   else if(Gate_PC)
+   {
+      BUS = NEXT_LATCHES.PC;
+   }
+   else if(Gate_ALU)
+   {
+   }
+   else if(Gate_SHF)
+   {
+   }
+   else if(Gate_MDR)
+   {
+      BUS = NEXT_LATCHES.MDR;
+   }
 
 }
 

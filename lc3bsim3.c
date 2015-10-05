@@ -690,6 +690,11 @@ void eval_bus_drivers() {
            addr2 = Low16bits(-1024 + (addr2 & 0x3FF));
       }
    }
+   if(LSHF1 == 1)
+   {
+      addr2 = Low16bits(addr2 << 1);
+   }
+   aaRes = Low16bits(addr1 + addr2);
 }
 
 

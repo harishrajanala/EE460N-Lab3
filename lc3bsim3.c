@@ -713,10 +713,23 @@ void eval_bus_drivers() {
    {
       SR1 = (CURRENT_LATCHES.IR >> 6) & 0x7;
    }
-
+   int op2;
    if(ALUK == 0)
    {
       /*add operation*/
+      if(CURRENT_LATCHES.IR & 0x10)
+      {
+         op2 = CURRENT_LATCHES.IR & 0x1F;
+         if(op2 & 0x10)
+         {
+            op2 = Low16bits(-16 + (op2 & 0xF));
+         }
+      }
+      else
+      {
+         op2 = Low16bits(CURRENT_LATCHES.REGS[CURRENT_LATCHES.IR & 0x7]);
+      }
+      aluRes = Low16bits(CURRENT_LATCHES.REGS[SR1] + op2);
    }
    else if (ALUK == 1)
    {

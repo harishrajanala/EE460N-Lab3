@@ -628,6 +628,8 @@ int aluRes;
 int aaRes;
 int addr1;
 int addr2;
+int dr;
+int sr1;
  
 void eval_bus_drivers() {
 
@@ -703,6 +705,15 @@ void eval_bus_drivers() {
    /*get result of address adder*/
    aaRes = Low16bits(addr1 + addr2);
    
+   if(SR1MUX == 0)
+   {
+      SR1 = (CURRENT_LATCHES.IR >> 9) & 0x7;
+   }
+   else if(SR1MUX == 1)
+   {
+      SR1 = (CURRENT_LATCHES.IR >> 6) & 0x7;
+   }
+
    if(ALUK == 0)
    {
       /*add operation*/

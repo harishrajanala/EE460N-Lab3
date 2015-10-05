@@ -659,7 +659,7 @@ void eval_bus_drivers() {
    else if(ADDR1MUX == 1)
    {
       /*addr1 = base register, check instr register*/
-      addr1  = CURRENT_LATHCES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7];
+      addr1  = CURRENT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7];
    }   
 
    if(ADDR2MUX == 0)
@@ -668,7 +668,27 @@ void eval_bus_drivers() {
    }
    else if (ADDR2MUX == 1)
    {
-      
+      addr2 = CURRENT_LATCHES.IR & 0x3F;
+      if(addr2 & 0x20)
+      {
+         addr2 = Low16bits(-32 + (addr2 & 0x1F));
+      }
+   }
+   else if(ADDR2MUX == 2)
+   {
+      addr2 = CURRENT_LATCHES.IR & 0x1FF;
+      if(addr2 & 0x100)
+      {
+           addr2 = Low16bits(-256 + (addr2 & 0xFF));
+      }
+   }
+   else if(ADDR2MUX == 3)
+   {
+      addr2 = CURRENT_LATCHES.IR & 0x7FF;
+      if(addr2 & 0x400)
+      {
+           addr2 = Low16bits(-1024 + (addr2 & 0x3FF));
+      }
    }
 }
 

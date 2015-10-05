@@ -624,8 +624,11 @@ void cycle_memory() {
    }
 }
 
-
-
+int aluRes;
+int aaRes;
+int addr1;
+int addr2;
+ 
 void eval_bus_drivers() {
 
   /* 
@@ -636,7 +639,37 @@ void eval_bus_drivers() {
    *		 Gate_ALU,
    *		 Gate_SHF,
    *		 Gate_MDR.
-   */    
+   */
+   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
+   int PCMUX = GetPCMUX(contrAddr);
+   int DRMUX = GetDRMUX(contrAddr);
+   int SR1MUX = GetSR1MUX(contrAddr);
+   int ADDR1MUX = GetADDR1MUX(contrAddr);
+   int ADDR2MUX = GetADDR2MUX(contrAddr);
+   int MARMUX = GetMARMUX(contrAddr);
+   int ALUK = GetALUK(contrAddr);
+   int MIO_EN = GetMIO_EN(contrAddr);
+   int R_W = GetR_W(contrAddr);
+   int DATA_SIZE = GetDATA_SIZE(contrAddr);
+   int LSHF1 = GetLSHF1(contrAddr);
+   if(ADDR1MUX == 0)
+   {
+      addr1 = CURRENT_LATCHES.PC;
+   }
+   else if(ADDR1MUX == 1)
+   {
+      /*addr1 = base register, check instr register*/
+      addr1  = CURRENT_LATHCES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7];
+   }   
+
+   if(ADDR2MUX == 0)
+   {
+      addr2 = 0;
+   }
+   else if (ADDR2MUX == 1)
+   {
+      
+   }
 }
 
 

@@ -946,7 +946,7 @@ void latch_datapath_values() {
    
    if(ldMAR)
    {
-   	NEXT_LATCHES.MAR = Low116bits(BUS);
+   	NEXT_LATCHES.MAR = Low16bits(BUS);
    }
    
    if(ldMDR)
@@ -990,7 +990,7 @@ void latch_datapath_values() {
    	}
    	else if(DRMUX == 1)
    	{
-   		NEXT_LATCHES.REGS[7] = Low6bits(BUS);
+   		NEXT_LATCHES.REGS[7] = Low16bits(BUS);
    	}
    }
    

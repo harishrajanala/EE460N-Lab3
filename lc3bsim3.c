@@ -914,7 +914,7 @@ void latch_datapath_values() {
    int ldIR = getLD_IR(contrAddr);
    int ldBEN = getLD_BEN(contrAddr);
    int ldREG = getLD_REG(contrAddr);
-   int ldCC = getLD_CC(contr);
+   int ldCC = getLD_CC(contrAddr);
    int PCMUX = GetPCMUX(contrAddr);
    int DRMUX = GetDRMUX(contrAddr);
    int MIO_EN = GetMIO_EN(contrAddr);
@@ -997,7 +997,7 @@ void latch_datapath_values() {
    	else if(Low16bits(BUS) & 0x8000)
    	{
    		NEXT_LATCHES.Z = 0;
-   		NEXT_LATCHES.N = 1
+   		NEXT_LATCHES.N = 1;
    		NEXT_LATCHES.P = 0;
    	}
    	else

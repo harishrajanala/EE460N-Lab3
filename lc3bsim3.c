@@ -581,9 +581,9 @@ void eval_micro_sequencer() {
    * Evaluate the address of the next state according to the 
    * micro sequencer logic. Latch the next microinstruction.
    */
-   int j = getJ(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ird = getIRD(CURRENT_LATCHES.MICROINSTRUCTION);
-   int cond = getCOND(CURRENT_LATCHES.MICROINSTRUCTION);
+   int j = GetJ(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ird = GetIRD(CURRENT_LATCHES.MICROINSTRUCTION);
+   int cond = GetCOND(CURRENT_LATCHES.MICROINSTRUCTION);
    int cond1 = (cond >> 1) & 0x1;
    int cond0 = cond & 0x1;
    int next;
@@ -904,13 +904,13 @@ void latch_datapath_values() {
    * require sourcing the bus; therefore, this routine has to come 
    * after drive_bus.
    */       
-   int ldPC = getLD_PC(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldMAR = getLD_MAR(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldMDR = getLD_MDR(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldIR = getLD_IR(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldBEN = getLD_BEN(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldREG = getLD_REG(CURRENT_LATCHES.MICROINSTRUCTION);
-   int ldCC = getLD_CC(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldPC = GetLD_PC(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldMAR = GetLD_MAR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldMDR = GetLD_MDR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldIR = GetLD_IR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldBEN = GetLD_BEN(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldREG = GetLD_REG(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldCC = GetLD_CC(CURRENT_LATCHES.MICROINSTRUCTION);
    int PCMUX = GetPCMUX(CURRENT_LATCHES.MICROINSTRUCTION);
    int DRMUX = GetDRMUX(CURRENT_LATCHES.MICROINSTRUCTION);
    int MIO_EN = GetMIO_EN(CURRENT_LATCHES.MICROINSTRUCTION);

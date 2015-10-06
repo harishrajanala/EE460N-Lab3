@@ -644,6 +644,18 @@ void cycle_memory() {
       				MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
       			}
       		}
+      		else if(R_W == 0)
+      		{
+      			int index = CURRENT_LATCHES.MAR >> 2;
+      			if(DATA_SIZE == 0)
+      			{
+      				
+      			}
+      			else if(DATA_SIZE == 1)
+      			{
+      				NEXT_LATCHES.MDR = (MEMORY[index][0] & 0xFF) + ((MEMORY[index][1] << 8) & 0xFF00);
+      			}
+      		}
    	}
    }
    else

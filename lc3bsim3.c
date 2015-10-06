@@ -856,5 +856,84 @@ void latch_datapath_values() {
    * require sourcing the bus; therefore, this routine has to come 
    * after drive_bus.
    */       
+   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
+   int ldPC = getLD_PC(contrAddr);
+   int ldMAR = getLD_MAR(contrAddr);
+   int ldMDR = getLD_MDR(contrAddr);
+   int ldIR = getLD_IR(contrAddr);
+   int ldBEN = getLD_BEN(contrAddr);
+   int ldREG = getLD_REG(contrAddr);
+   int ldCC = getLD_CC(contr);
+   int PCMUX = GetPCMUX(contrAddr);
+   int DRMUX = GetDRMUX(contrAddr);
+   if(ldPC)
+   {
+   	if(PCMUX == 0)
+   	{
+   		NEXT_LATCHES.PC = CURRENT_LATCHES.PC + 2;
+   	}
+   	else if(PCMUX == 1)
+   	{
+   		NEXT_LATCHES.PC = BUS;
+   	}
+   	else if(PCMUX == 2)
+   	{
+   		NEXT_LATCHES.PC = aaRes;
+   	}
+   }
+   
+   if(ldMAR)
+   {
+   	NEXT_LATCHES.MAR = BUS;
+   }
+   
+   if(ldMDR)
+   {
+   	
+   }
+   
+   if(ldIR)
+   {
+   	NEXT_LATCHES.IR = BUS;
+   }
+   
+   if(ldBEN)
+   {
+   	NEXT_LATCHES.BEN = (CURRENT_LATCHES.N & ((CURRENT_LATCHES.IR >> 11) & 0x1)) | (CURRENT_LATCHES.Z & ((CURRENT_LATCHES.IR >> 10) & 0x1)) | (CURRENT_LATCHES.P & ((CURRENT_LATCHES.IR >> 9) & 0x1));
+   }
+   
+   if(ldREG)
+   {
+   	if(DRMUX == 0)
+   	{
+   		NEXT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 9) & 0x7] = BUS;
+   	}
+   	else if(DRMUX == 1)
+   	{
+   		NEXT_LATCHES.REGS[7] = BUS;
+   	}
+   }
+   
+   if(ldCC)
+   {
+   	if(Low16bits(BUS) == 0)
+   	{
+   		NEXT_LATCHES.Z = 1;
+   		NEXT_LATCHES.N = 0;
+   		NEXT_LATCHES.P = 0;
+   	}
+   	else if(Low16bits(BUS) & 0x8000)
+   	{
+   		NEXT_LATCHES.Z = 0;
+   		NEXT_LATCHES.N = 1
+   		NEXT_LATCHES.P = 0;
+   	}
+   	else
+   	{
+   		NEXT_LATCHES.Z = 0;
+   		NEXT_LATCHES.N = 0;
+   		NEXT_LATCHES.P = 1;
+   	}
 
+   }
 }

@@ -782,7 +782,7 @@ void eval_bus_drivers() {
    if(ALUK == 0)
    {
       /*add operation*/
-      if(CURRENT_LATCHES.IR & 0x10)
+      if(CURRENT_LATCHES.IR & 0x20)
       {
          op2 = CURRENT_LATCHES.IR & 0x1F;
          if(op2 & 0x10)
@@ -799,7 +799,7 @@ void eval_bus_drivers() {
    else if (ALUK == 1)
    {
       /*and operation*/
-      if(CURRENT_LATCHES.IR & 0x10)
+      if(CURRENT_LATCHES.IR & 0x20)
       {
          op2 = CURRENT_LATCHES.IR & 0x1F;
          if(op2 & 0x10)
@@ -816,7 +816,7 @@ void eval_bus_drivers() {
    else if (ALUK == 2)
    {
       /*xor operation*/
-      if(CURRENT_LATCHES.IR & 0x10)
+      if(CURRENT_LATCHES.IR & 0x20)
       {
          op2 = CURRENT_LATCHES.IR & 0x1F;
          if(op2 & 0x10)

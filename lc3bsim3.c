@@ -626,7 +626,7 @@ void cycle_memory() {
       		NEXT_LATCHES.READY = 1;
       		if(R_W == 1)
       		{
-      			int index = CURRENT_LATCHES.MAR >> 2;
+      			int index = CURRENT_LATCHES.MAR >> 1;
       			if(DATA_SIZE == 0)
       			{
       				if(CURRENT_LATCHES.MAR & 0x1)
@@ -646,7 +646,7 @@ void cycle_memory() {
       		}
       		else if(R_W == 0)
       		{
-      			int index = CURRENT_LATCHES.MAR >> 2;
+      			int index = CURRENT_LATCHES.MAR >> 1;
       			if(DATA_SIZE == 0)
       			{
       				
@@ -967,7 +967,7 @@ void latch_datapath_values() {
    	else if(MIO_EN == 1)
    	{
    		/*getting from memory*/
-   		int index = CURRENT_LATCHES.MAR >> 2;
+   		int index = CURRENT_LATCHES.MAR >> 1;
    		NEXT_LATCHES.MDR = Low16bits(MEMORY[index][0] + (MEMORY[index][1] << 8));
    	}
    }

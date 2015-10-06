@@ -616,12 +616,43 @@ void cycle_memory() {
    * If fourth, we need to latch Ready bit at the end of 
    * cycle to prepare microsequencer for the fifth cycle.  
    */
-   memCycle++;
-   if(memCycle == 4)
+   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
+   int R_W = GetR_W(contrAddr);
+   int DATA_SIZE = GetDATA_SIZE(contrAddr);
+   if(CURRENT_LATCHES.STATE_NUMBER==33 || CURRENT_LATCHES.STATE_NUMBER==28 || CURRENT_LATCHES.STATE_NUMBER==29 || CURRENT_LATCHES.STATE_NUMBER==25 || CURRENT_LATCHES.STATE_NUMBER==16 || CURRENT_LATCHES.STATE_NUMBER==17)
    {
-      NEXT_LATCHES.READY = 1;
-      memCycle = 0;
+   	memCycle++;
+   	if(memCycle == MEM_CYCLES-1)
+   	{
+      		NEXT_LATCHES.READY = 1;
+      		if(R_W == 1)
+      		{
+      			int index = CURRENT_LATCHES.MAR >> 2;
+      			if(DATA_SIZE == 0)
+      			{
+      				if(CURRENT_LATCHES.MAR & 0x1)
+      				{
+      					MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
+      				}
+      				else
+      				{
+      					MEMORY[index][0] = CURRENT_LATCHES.MDR & 0xFF;
+      				}
+      			}
+      			else if(DATA_SIZE == 1)
+      			{
+      				MEMORY[index][0] = CURRENT_LATCHES.MDR & 0xFF;
+      				MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
+      			}
+      		}
+   	}
    }
+   else
+   {
+   	NEXT_LATCHES.READY = 0;
+   	memCycle = 0;
+   }
+   
 }
 
 int aluRes;
@@ -658,6 +689,26 @@ void eval_bus_drivers() {
    int DATA_SIZE = GetDATA_SIZE(contrAddr);
    int LSHF1 = GetLSHF1(contrAddr);
 
+   if(DATA_SIZE == 0)
+   {
+   	if(CURRENT_LATCHES.MAR & 0x1)
+   	{
+   		mdrRes = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
+   	}
+   	else
+   	{
+   		mdrRes = CURRENT_LATCHES.MDR & 0xFF;
+   	}
+   	if(mdrRes & 0x80)
+   	{
+   		mdrRes = -128 + (mdrRes & 0x7F);
+   	}
+   	mdrRes = Low16bits(mdrRes);
+   }
+   else if(DATA_SIZE == 1)
+   {
+   	mdrRes = Low16bits(CURRENT_LATCHES.MDR);
+   }
 
 /*get what addr1 is*/
    if(ADDR1MUX == 0)
@@ -842,7 +893,7 @@ void drive_bus() {
    }
    else if(Gate_MDR)
    {
-      BUS = CURRENT_LATCHES.MDR;
+      BUS = mdrRes;
    }
 
 }
@@ -866,6 +917,9 @@ void latch_datapath_values() {
    int ldCC = getLD_CC(contr);
    int PCMUX = GetPCMUX(contrAddr);
    int DRMUX = GetDRMUX(contrAddr);
+   int MIO_EN = GetMIO_EN(contrAddr);
+   int R_W = GetR_W(contrAddr);
+   int DATA_SIZE = GetDATA_SIZE(contrAddr);
    if(ldPC)
    {
    	if(PCMUX == 0)
@@ -889,7 +943,32 @@ void latch_datapath_values() {
    
    if(ldMDR)
    {
-   	
+   	if(MIO_EN == 0)
+   	{
+   		/*getting from source register, may need to change ucode table*/
+   		if(DATA_SIZE == 0)
+   		{
+   			if(CURRENT_LATCHES.MAR & 0x1)
+   			{
+   				NEXT_LATCHES.MDR = (CURRENT_LATCHES.REGS[SR1] >> 8) & 0xFF;
+   			}
+   			else
+   			{
+   				NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFF;
+   			}
+   			
+   		}
+   		else if(DATA_SIZE == 1;)
+   		{
+   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1];
+   		}
+   	}
+   	else if(MIO_EN == 1)
+   	{
+   		/*getting from memory*/
+   		int index = CURRENT_LATCHES.MDR >> 2;
+   		NEXT_LATCHES.MDR = Low16bits(MEMORY[index][0] + (MEMORY[index][1] << 8));
+   	}
    }
    
    if(ldIR)

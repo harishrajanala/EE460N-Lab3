@@ -630,6 +630,7 @@ int addr1;
 int addr2;
 int dr;
 int sr1;
+int shfRes;
  
 void eval_bus_drivers() {
 
@@ -714,6 +715,7 @@ void eval_bus_drivers() {
       SR1 = (CURRENT_LATCHES.IR >> 6) & 0x7;
    }
    int op2;
+   /*get ALU result*/
    if(ALUK == 0)
    {
       /*add operation*/
@@ -769,6 +771,27 @@ void eval_bus_drivers() {
    {
       /*set ALU result to same as address adder*/
       aluRes = aaRes;
+   }
+
+   /*get SHF result*/
+   int shfAmt = CURRENT_LATCHES.IR & 0xF;
+   int shfType = (CURRENT_LATCHES.IR >> 4) & 0x3;
+   if(shfType == 0)
+   {
+      /*left shift*/
+      shfRes = Low16bits(CURRENT_LATCHES.REGS[SR1] << shfAmt);
+   }
+   else if (shfType == 1)
+   {
+      /*right shift logical*/
+      shfRes = Low16bits(CURRENT_LATCHES.REGS[SR1] >> shfAmt);
+   }
+   else if (shfType == 3)
+   {
+      /*right shift arithmetic*/
+      short t = (short) Low16bits(CURRENT_LATCHES.REGS[SR1]);
+      t = t >> shfAmt;
+      shfRes = Low16bits(t);
    }
 }
 

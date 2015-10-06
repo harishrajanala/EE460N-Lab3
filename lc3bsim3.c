@@ -631,6 +631,8 @@ int addr2;
 int dr;
 int sr1;
 int shfRes;
+int mmRes;
+int mdrRes;
  
 void eval_bus_drivers() {
 
@@ -792,6 +794,16 @@ void eval_bus_drivers() {
       short t = (short) Low16bits(CURRENT_LATCHES.REGS[SR1]);
       t = t >> shfAmt;
       shfRes = Low16bits(t);
+   }
+
+   /*get MARMUX results*/
+   if(MARMUX == 0)
+   {
+      mmRes = Low16bits((CURRENT_LATCHES.IR & 0xFF) << 1);
+   }
+   else if(MARMUX == 1)
+   {
+      mmRes = aaRes;
    }
 }
 

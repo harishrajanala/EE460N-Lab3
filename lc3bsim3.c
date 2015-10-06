@@ -660,7 +660,7 @@ int aaRes;
 int addr1;
 int addr2;
 int dr;
-int sr1;
+int SR1;
 int shfRes;
 int mmRes;
 int mdrRes;

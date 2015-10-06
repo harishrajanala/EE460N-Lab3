@@ -626,7 +626,7 @@ void cycle_memory() {
       		NEXT_LATCHES.READY = 1;
       		if(R_W == 1)
       		{
-      			int index = CURRENT_LATCHES.MAR >> 1;
+      			int index = Low16bits(CURRENT_LATCHES.MAR) >> 1;
       			if(DATA_SIZE == 0)
       			{
       				if(CURRENT_LATCHES.MAR & 0x1)
@@ -644,18 +644,18 @@ void cycle_memory() {
       				MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
       			}
       		}
-      		else if(R_W == 0)
-      		{
-      			int index = CURRENT_LATCHES.MAR >> 1;
-      			if(DATA_SIZE == 0)
-      			{
-      				
-      			}
-      			else if(DATA_SIZE == 1)
-      			{
-      				NEXT_LATCHES.MDR = (MEMORY[index][0] & 0xFF) + ((MEMORY[index][1] << 8) & 0xFF00);
-      			}
-      		}
+      		/*else if(R_W == 0)
+      		*{
+      		*	int index = CURRENT_LATCHES.MAR >> 1;
+      		*	if(DATA_SIZE == 0)
+      		*	{
+      		*		
+      		*	}
+      		*	else if(DATA_SIZE == 1)
+      		*	{
+      		*		NEXT_LATCHES.MDR = (MEMORY[index][0] & 0xFF) + ((MEMORY[index][1] << 8) & 0xFF00);
+      		*	}
+      		}*/
    	}
    }
    else
@@ -723,12 +723,12 @@ void eval_bus_drivers() {
 /*get what addr1 is*/
    if(ADDR1MUX == 0)
    {
-      addr1 = CURRENT_LATCHES.PC;
+      addr1 = Low16bits(CURRENT_LATCHES.PC);
    }
    else if(ADDR1MUX == 1)
    {
       /*addr1 = base register, check instr register*/
-      addr1  = CURRENT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7];
+      addr1  = Low16bits(CURRENT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 6) & 0x7]);
    }   
 
 /*get what addr2 is*/
@@ -833,7 +833,7 @@ void eval_bus_drivers() {
    else if(ALUK == 3)
    {
       /*set ALU result to same as address adder*/
-      aluRes = aaRes;
+      aluRes = Low16bits(aaRes);
    }
 
    /*get SHF result*/
@@ -864,7 +864,7 @@ void eval_bus_drivers() {
    }
    else if(MARMUX == 1)
    {
-      mmRes = aaRes;
+      mmRes = Low16bits(aaRes);
    }
 }
 
@@ -886,23 +886,23 @@ void drive_bus() {
    }   
    else if(Gate_MARMUX)
    {
-   	BUS = mmRes;
+   	BUS = Low16bits(mmRes);
    }
    else if(Gate_PC)
    {
-      BUS = CURRENT_LATCHES.PC;
+      BUS = Low16bits(CURRENT_LATCHES.PC);
    }
    else if(Gate_ALU)
    {
-   	BUS = aluRes;
+   	BUS = Low16bits(aluRes);
    }
    else if(Gate_SHF)
    {
-   	BUS = shfRes;
+   	BUS = Low16bits(shfRes);
    }
    else if(Gate_MDR)
    {
-      BUS = mdrRes;
+      BUS = Low16bits(mdrRes);
    }
 
 }
@@ -932,21 +932,21 @@ void latch_datapath_values() {
    {
    	if(PCMUX == 0)
    	{
-   		NEXT_LATCHES.PC = CURRENT_LATCHES.PC + 2;
+   		NEXT_LATCHES.PC = Low16bits(CURRENT_LATCHES.PC + 2);
    	}
    	else if(PCMUX == 1)
    	{
-   		NEXT_LATCHES.PC = BUS;
+   		NEXT_LATCHES.PC = Low16bits(BUS);
    	}
    	else if(PCMUX == 2)
    	{
-   		NEXT_LATCHES.PC = aaRes;
+   		NEXT_LATCHES.PC = Low16bits(aaRes);
    	}
    }
    
    if(ldMAR)
    {
-   	NEXT_LATCHES.MAR = BUS;
+   	NEXT_LATCHES.MAR = Low116bits(BUS);
    }
    
    if(ldMDR)
@@ -956,11 +956,11 @@ void latch_datapath_values() {
    		/*getting from source register, may need to change ucode table*/
    		if(CURRENT_LATCHES.MAR & 0x1)
    		{
-   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFF + ((CURRENT_LATCHES.REGS[SR1] << 8) & 0xFF00);
+   			NEXT_LATCHES.MDR = Low16bits(CURRENT_LATCHES.REGS[SR1] & 0xFF + ((CURRENT_LATCHES.REGS[SR1] << 8) & 0xFF00));
    		}
    		else
    		{
-   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFFFF;
+   			NEXT_LATCHES.MDR = Low16bits(CURRENT_LATCHES.REGS[SR1] & 0xFFFF);
    		}
 
    	}
@@ -974,7 +974,7 @@ void latch_datapath_values() {
    
    if(ldIR)
    {
-   	NEXT_LATCHES.IR = BUS;
+   	NEXT_LATCHES.IR = Low16bits(BUS);
    }
    
    if(ldBEN)
@@ -986,11 +986,11 @@ void latch_datapath_values() {
    {
    	if(DRMUX == 0)
    	{
-   		NEXT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 9) & 0x7] = BUS;
+   		NEXT_LATCHES.REGS[(CURRENT_LATCHES.IR >> 9) & 0x7] = Low16bits(BUS);
    	}
    	else if(DRMUX == 1)
    	{
-   		NEXT_LATCHES.REGS[7] = BUS;
+   		NEXT_LATCHES.REGS[7] = Low6bits(BUS);
    	}
    }
    

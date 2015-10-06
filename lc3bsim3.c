@@ -635,7 +635,7 @@ void cycle_memory() {
       			{
       				if(CURRENT_LATCHES.MAR & 0x1)
    				{
-      					MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
+      					MEMORY[index][1] = CURRENT_LATCHES.MDR & 0xFF;
       				}
       				else
       				{
@@ -949,7 +949,9 @@ void latch_datapath_values() {
    		/*getting from source register, may need to change ucode table*/
    		if(CURRENT_LATCHES.MAR & 0x1)
    		{
-   			NEXT_LATCHES.MDR = Low16bits(CURRENT_LATCHES.REGS[SR1] & 0xFF + ((CURRENT_LATCHES.REGS[SR1] << 8) & 0xFF00));
+   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFF;
+   			NEXT_LATCHES.MDR = NEXT_LATCHES.MDR + ((CURRENT_LATCHES.REGS[SR1] << 8) & 0xFF00);
+   			NEXT_LATCHES.MDR = Low16bits(NEXT_LATCHES.MDR);
    		}
    		else
    		{

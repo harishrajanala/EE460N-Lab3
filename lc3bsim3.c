@@ -826,20 +826,23 @@ void drive_bus() {
    }   
    else if(Gate_MARMUX)
    {
+   	BUS = mmRes;
    }
    else if(Gate_PC)
    {
-      BUS = NEXT_LATCHES.PC;
+      BUS = CURRENT_LATCHES.PC;
    }
    else if(Gate_ALU)
    {
+   	BUS = aluRes;
    }
    else if(Gate_SHF)
    {
+   	BUS = shfRes;
    }
    else if(Gate_MDR)
    {
-      BUS = NEXT_LATCHES.MDR;
+      BUS = CURRENT_LATCHES.MDR;
    }
 
 }

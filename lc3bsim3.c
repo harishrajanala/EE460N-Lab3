@@ -946,22 +946,15 @@ void latch_datapath_values() {
    	if(MIO_EN == 0)
    	{
    		/*getting from source register, may need to change ucode table*/
-   		if(DATA_SIZE == 0)
+   		if(CURRENT_LATCHES.MAR & 0x1)
    		{
-   			if(CURRENT_LATCHES.MAR & 0x1)
-   			{
-   				NEXT_LATCHES.MDR = (CURRENT_LATCHES.REGS[SR1] >> 8) & 0xFF;
-   			}
-   			else
-   			{
-   				NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFF;
-   			}
-   			
+   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFF + ((CURRENT_LATCHES.REGS[SR1] << 8) & 0xFF00);
    		}
-   		else if(DATA_SIZE == 1;)
+   		else
    		{
-   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1];
+   			NEXT_LATCHES.MDR = CURRENT_LATCHES.REGS[SR1] & 0xFFFF;
    		}
+
    	}
    	else if(MIO_EN == 1)
    	{

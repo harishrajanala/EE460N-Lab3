@@ -602,7 +602,7 @@ void eval_micro_sequencer() {
    	next = j | (addrMode + (ready << 1) + (branch << 2));
    }
    NEXT_LATCHES.STATE_NUMBER = next;
-   NEXT_LATCHES.MICROINSTRUCTION = CONTROL_STORE[next];
+   NEXT_LATCHES.MICROINSTRUCTION = &(CONTROL_STORE[next][0]);
    
 }
 

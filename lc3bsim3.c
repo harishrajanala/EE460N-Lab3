@@ -581,9 +581,9 @@ void eval_micro_sequencer() {
    * Evaluate the address of the next state according to the 
    * micro sequencer logic. Latch the next microinstruction.
    */
-   int j = getJ(CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER]);
-   int ird = getIRD(CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER]);
-   int cond = getCOND(CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER]);
+   int j = getJ(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ird = getIRD(CURRENT_LATCHES.MICROINSTRUCTION);
+   int cond = getCOND(CURRENT_LATCHES.MICROINSTRUCTION);
    int cond1 = (cond >> 1) & 0x1;
    int cond0 = cond & 0x1;
    int next;
@@ -616,9 +616,8 @@ void cycle_memory() {
    * If fourth, we need to latch Ready bit at the end of 
    * cycle to prepare microsequencer for the fifth cycle.  
    */
-   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
-   int R_W = GetR_W(contrAddr);
-   int DATA_SIZE = GetDATA_SIZE(contrAddr);
+   int R_W = GetR_W(CURRENT_LATCHES.MICROINSTRUCTION);
+   int DATA_SIZE = GetDATA_SIZE(CURRENT_LATCHES.MICROINSTRUCTION);
    if(CURRENT_LATCHES.STATE_NUMBER==33 || CURRENT_LATCHES.STATE_NUMBER==28 || CURRENT_LATCHES.STATE_NUMBER==29 || CURRENT_LATCHES.STATE_NUMBER==25 || CURRENT_LATCHES.STATE_NUMBER==16 || CURRENT_LATCHES.STATE_NUMBER==17)
    {
    	memCycle++;
@@ -676,18 +675,17 @@ void eval_bus_drivers() {
    *		 Gate_SHF,
    *		 Gate_MDR.
    */
-   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
-   int PCMUX = GetPCMUX(contrAddr);
-   int DRMUX = GetDRMUX(contrAddr);
-   int SR1MUX = GetSR1MUX(contrAddr);
-   int ADDR1MUX = GetADDR1MUX(contrAddr);
-   int ADDR2MUX = GetADDR2MUX(contrAddr);
-   int MARMUX = GetMARMUX(contrAddr);
-   int ALUK = GetALUK(contrAddr);
-   int MIO_EN = GetMIO_EN(contrAddr);
-   int R_W = GetR_W(contrAddr);
-   int DATA_SIZE = GetDATA_SIZE(contrAddr);
-   int LSHF1 = GetLSHF1(contrAddr);
+   int PCMUX = GetPCMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int DRMUX = GetDRMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int SR1MUX = GetSR1MUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ADDR1MUX = GetADDR1MUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ADDR2MUX = GetADDR2MUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int MARMUX = GetMARMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ALUK = GetALUK(CURRENT_LATCHES.MICROINSTRUCTION);
+   int MIO_EN = GetMIO_EN(CURRENT_LATCHES.MICROINSTRUCTION);
+   int R_W = GetR_W(CURRENT_LATCHES.MICROINSTRUCTION);
+   int DATA_SIZE = GetDATA_SIZE(CURRENT_LATCHES.MICROINSTRUCTION);
+   int LSHF1 = GetLSHF1(CURRENT_LATCHES.MICROINSTRUCTION);
 
    if(DATA_SIZE == 0)
    {
@@ -865,12 +863,11 @@ void drive_bus() {
    * Datapath routine for driving the bus from one of the 5 possible 
    * tristate drivers. 
    */    
-   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
-   int Gate_MARMUX = GetGATE_MARMUX(contrAddr);
-   int Gate_PC = GetGATE_PC(contrAddr);
-   int Gate_ALU = GetGATE_ALU(contrAddr);
-   int Gate_SHF = GetGATE_SHF(contrAddr);
-   int Gate_MDR = GetGATE_MDR(contrAddr);
+   int Gate_MARMUX = GetGATE_MARMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int Gate_PC = GetGATE_PC(CURRENT_LATCHES.MICROINSTRUCTION);
+   int Gate_ALU = GetGATE_ALU(CURRENT_LATCHES.MICROINSTRUCTION);
+   int Gate_SHF = GetGATE_SHF(CURRENT_LATCHES.MICROINSTRUCTION);
+   int Gate_MDR = GetGATE_MDR(CURRENT_LATCHES.MICROINSTRUCTION);
    if(!(Gate_MARMUX || Gate_PC || Gate_ALU || Gate_SHF || Gate_MDR))
    {
       BUS = 0;
@@ -907,19 +904,18 @@ void latch_datapath_values() {
    * require sourcing the bus; therefore, this routine has to come 
    * after drive_bus.
    */       
-   int* contrAddr = CONTROL_STORE[CURRENT_LATCHES.STATE_NUMBER];
-   int ldPC = getLD_PC(contrAddr);
-   int ldMAR = getLD_MAR(contrAddr);
-   int ldMDR = getLD_MDR(contrAddr);
-   int ldIR = getLD_IR(contrAddr);
-   int ldBEN = getLD_BEN(contrAddr);
-   int ldREG = getLD_REG(contrAddr);
-   int ldCC = getLD_CC(contrAddr);
-   int PCMUX = GetPCMUX(contrAddr);
-   int DRMUX = GetDRMUX(contrAddr);
-   int MIO_EN = GetMIO_EN(contrAddr);
-   int R_W = GetR_W(contrAddr);
-   int DATA_SIZE = GetDATA_SIZE(contrAddr);
+   int ldPC = getLD_PC(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldMAR = getLD_MAR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldMDR = getLD_MDR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldIR = getLD_IR(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldBEN = getLD_BEN(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldREG = getLD_REG(CURRENT_LATCHES.MICROINSTRUCTION);
+   int ldCC = getLD_CC(CURRENT_LATCHES.MICROINSTRUCTION);
+   int PCMUX = GetPCMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int DRMUX = GetDRMUX(CURRENT_LATCHES.MICROINSTRUCTION);
+   int MIO_EN = GetMIO_EN(CURRENT_LATCHES.MICROINSTRUCTION);
+   int R_W = GetR_W(CURRENT_LATCHES.MICROINSTRUCTION);
+   int DATA_SIZE = GetDATA_SIZE(CURRENT_LATCHES.MICROINSTRUCTION);
    if(ldPC)
    {
    	if(PCMUX == 0)

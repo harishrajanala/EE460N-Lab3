@@ -624,13 +624,17 @@ void cycle_memory() {
    	if(memCycle == MEM_CYCLES-1)
    	{
       		NEXT_LATCHES.READY = 1;
-      		if(R_W == 1)
+   	}
+   	if(CURRENT_LATCHES.READY == 1)
+   	{
+   		memCycle = 0;
+   		if(R_W == 1)
       		{
       			int index = Low16bits(CURRENT_LATCHES.MAR) >> 1;
       			if(DATA_SIZE == 0)
       			{
       				if(CURRENT_LATCHES.MAR & 0x1)
-      				{
+   				{
       					MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
       				}
       				else
@@ -644,18 +648,7 @@ void cycle_memory() {
       				MEMORY[index][1] = (CURRENT_LATCHES.MDR >> 8) & 0xFF;
       			}
       		}
-      		/*else if(R_W == 0)
-      		*{
-      		*	int index = CURRENT_LATCHES.MAR >> 1;
-      		*	if(DATA_SIZE == 0)
-      		*	{
-      		*		
-      		*	}
-      		*	else if(DATA_SIZE == 1)
-      		*	{
-      		*		NEXT_LATCHES.MDR = (MEMORY[index][0] & 0xFF) + ((MEMORY[index][1] << 8) & 0xFF00);
-      		*	}
-      		}*/
+      		NEXT_LATCHES.READY == 0;
    	}
    }
    else
@@ -967,8 +960,12 @@ void latch_datapath_values() {
    	else if(MIO_EN == 1)
    	{
    		/*getting from memory*/
-   		int index = CURRENT_LATCHES.MAR >> 1;
-   		NEXT_LATCHES.MDR = Low16bits(MEMORY[index][0] + (MEMORY[index][1] << 8));
+   		if(CURRENT_LATCHES.READY == 1)
+   		{
+   			int index = CURRENT_LATCHES.MAR >> 1;
+   			NEXT_LATCHES.MDR = Low16bits(MEMORY[index][0] + (MEMORY[index][1] << 8));	
+   		}
+   		
    	}
    }
    
